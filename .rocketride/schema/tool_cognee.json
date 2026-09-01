@@ -1,0 +1,132 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Persistent semantic memory backed by a Cognee server, exposed as three agent tools. \nRemember plain text, recall memory results while requesting references, and check background processing. The knowledge graph captures semantic relationships; it is not an AST, import graph, or call graph.",
+  "documentation": "https://docs.cognee.ai",
+  "icon": "cognee.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "allow_dataset_override": {
+          "default": false,
+          "description": "Allow agents to select a dataset per call. Leave off when several agents should share one operator-controlled memory scope.",
+          "title": "Allow dataset override",
+          "type": "boolean"
+        },
+        "api_key": {
+          "default": "",
+          "description": "Cognee API key sent as the <code>X-Api-Key</code> header. Falls back to <code>COGNEE_API_KEY</code>. Self-hosted servers with access control disabled can leave this blank.",
+          "title": "API Key",
+          "type": "string"
+        },
+        "base_url": {
+          "default": "http://localhost:8000",
+          "description": "Base URL of the Cognee server. Self-hosted Cognee defaults to <b>http://localhost:8000</b>. For Cognee Cloud, use the instance URL from <a href='https://platform.cognee.ai' target='_blank'>platform.cognee.ai</a>.",
+          "title": "Server URL",
+          "type": "string"
+        },
+        "dataset": {
+          "default": "main",
+          "description": "Default Cognee dataset used by all agent tools. Tool calls stay in this operator-controlled scope unless per-call overrides are enabled.",
+          "title": "Dataset",
+          "type": "string"
+        },
+        "request_timeout": {
+          "default": 120,
+          "description": "Maximum seconds to wait for one Cognee request.",
+          "maximum": 600,
+          "minimum": 5,
+          "title": "Request timeout (s)",
+          "type": "integer"
+        },
+        "search_type": {
+          "default": "GRAPH_COMPLETION_DECOMPOSITION",
+          "description": "How recall retrieves memory. Graph completion decomposition is the semantic default; the agent can override it per call.",
+          "enum": [
+            "GRAPH_COMPLETION_DECOMPOSITION",
+            "GRAPH_COMPLETION",
+            "RAG_COMPLETION",
+            "CHUNKS",
+            "SUMMARIES",
+            "TEMPORAL",
+            "FEELING_LUCKY"
+          ],
+          "title": "Default recall strategy",
+          "type": "string"
+        },
+        "top_k": {
+          "default": 15,
+          "description": "Maximum number of results recall retrieves per query.",
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Recall results (top_k)",
+          "type": "integer"
+        },
+        "type": {
+          "default": "tool_cognee",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "base_url",
+        "dataset",
+        "allow_dataset_override",
+        "search_type",
+        "top_k",
+        "request_timeout"
+      ],
+      "title": "Cognee",
+      "type": "object"
+    },
+    "ui": {
+      "allow_dataset_override": {},
+      "api_key": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "base_url": {},
+      "dataset": {},
+      "request_timeout": {},
+      "search_type": {
+        "ui:enumNames": [
+          "Graph completion decomposition (default)",
+          "Graph completion",
+          "RAG completion",
+          "Chunks",
+          "Summaries",
+          "Temporal",
+          "Feeling lucky"
+        ]
+      },
+      "top_k": {},
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "base_url",
+        "api_key",
+        "dataset",
+        "allow_dataset_override",
+        "search_type",
+        "top_k",
+        "request_timeout"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "cognee",
+  "protocol": "tool_cognee://",
+  "tile": [
+    "Dataset: ${parameters.cognee.dataset}"
+  ],
+  "title": "Cognee"
+}

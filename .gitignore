@@ -1,0 +1,26 @@
+# RocketRide
+# Keep RocketRide pipeline configuration and schemas in Git
+# Ignore only local secrets/config if created
+.rocketride/.env
+.rocketride/.env.*
+!.rocketride/.env.example
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/

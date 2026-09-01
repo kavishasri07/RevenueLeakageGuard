@@ -1,0 +1,221 @@
+{
+  "actions": 0,
+  "capabilities": 2048,
+  "classType": [
+    "text"
+  ],
+  "description": "The extraction brain. Reads document context together with a table cell by cell, \nand runs a validator pass that double-checks the extracted values on disagreement, \nreconciling and tie-breaking before emitting fully-qualified facts. Each fact carries \nthe user-configured target fields plus auto-attached provenance (page, table id, row, \ncolumn, source text, and a confidence score) so downstream consumers can trace every \nvalue back to where it came from.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "util-text.svg",
+  "invoke": {
+    "llm": {
+      "description": "LLM to use for fact extraction and validation",
+      "min": 1
+    }
+  },
+  "lanes": {
+    "documents": [
+      "answers",
+      "documents"
+    ],
+    "table": [
+      "answers",
+      "documents"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "default": {
+                  "object": "default",
+                  "properties": {
+                    "fields": {
+                      "items": {
+                        "properties": {
+                          "column": {
+                            "default": "field",
+                            "description": "Name of the target fact field",
+                            "maxLength": 32,
+                            "minLength": 2,
+                            "title": "Field",
+                            "type": "string"
+                          },
+                          "defval": {
+                            "default": "",
+                            "title": "Default Value",
+                            "type": "string"
+                          },
+                          "type": {
+                            "default": "text",
+                            "enum": [
+                              "text",
+                              "decimal",
+                              "int",
+                              "date",
+                              "time",
+                              "datetime",
+                              "timestamp",
+                              "binary",
+                              "json",
+                              "html",
+                              "url",
+                              "email",
+                              "phone",
+                              "ipv4",
+                              "ipv6",
+                              "uuid",
+                              "guid"
+                            ],
+                            "title": "Type",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type"
+                        ],
+                        "type": "object"
+                      },
+                      "maxItems": 32,
+                      "minItems": 1,
+                      "type": "array"
+                    },
+                    "include_provenance": {
+                      "default": true,
+                      "description": "Auto-attach provenance (page, table id, row, column, source text, confidence) to every emitted fact.",
+                      "enum": [
+                        true,
+                        false
+                      ],
+                      "title": "Include Provenance",
+                      "type": "boolean"
+                    },
+                    "validate": {
+                      "default": true,
+                      "description": "Run a second validator prompt pass that double-checks extracted facts and reconciles on disagreement.",
+                      "enum": [
+                        true,
+                        false
+                      ],
+                      "title": "Validate",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "fields",
+                    "validate",
+                    "include_provenance"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "default"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "default",
+          "enum": [
+            "default"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Fact Extract",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "fields": {
+          "items": {
+            "column": {},
+            "defval": {},
+            "type": {
+              "ui:enumNames": [
+                "Text",
+                "Number",
+                "Integer",
+                "Date",
+                "Time",
+                "DateTime",
+                "Timestamp",
+                "Binary",
+                "JSON",
+                "HTML",
+                "URL",
+                "Email",
+                "Phone",
+                "IPv4",
+                "IPv6",
+                "UUID",
+                "GUID"
+              ]
+            },
+            "ui:order": [
+              "column",
+              "type",
+              "defval"
+            ]
+          },
+          "ui:options": {
+            "label": false
+          },
+          "ui:order": [
+            "items"
+          ]
+        },
+        "include_provenance": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "fields",
+          "validate",
+          "include_provenance"
+        ],
+        "validate": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        }
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Default"
+        ],
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "profile",
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "extract_facts",
+  "protocol": "extract_facts://",
+  "title": "Fact Extractor"
+}

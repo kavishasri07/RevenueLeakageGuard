@@ -1,0 +1,119 @@
+{
+  "actions": 0,
+  "capabilities": 1024,
+  "classType": [
+    "database",
+    "tool"
+  ],
+  "description": "A database/tool node for HydraDB, a managed graph + memory store. \nExposes agent-callable tools to store text as memories (with automatic knowledge-graph \nextraction) and recall graph-enriched context by natural-language query. Retrieval is \nHydraDB's native server-side search - no embeddings or query language required.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "hydradb.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "default": {
+                  "object": "default",
+                  "properties": {
+                    "api_key": {
+                      "description": "HydraDB API key. Falls back to the HYDRA_DB_API_KEY environment variable if left blank.",
+                      "title": "API Key",
+                      "type": "string"
+                    },
+                    "collection": {
+                      "default": "default",
+                      "description": "Collection scope within the database (per-user/workspace partition for memories).",
+                      "title": "Collection",
+                      "type": "string"
+                    },
+                    "database": {
+                      "description": "HydraDB database - the space that stores your context. Create one in the HydraDB dashboard.",
+                      "title": "Database",
+                      "type": "string"
+                    },
+                    "max_results": {
+                      "default": 10,
+                      "description": "Default maximum number of results returned by recall_memory.",
+                      "maximum": 100,
+                      "minimum": 1,
+                      "title": "Max results",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "api_key",
+                    "database",
+                    "collection",
+                    "max_results"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "default"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "default",
+          "enum": [
+            "default"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "HydraDB",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "api_key": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "collection": {},
+        "database": {},
+        "max_results": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "api_key",
+          "database",
+          "collection",
+          "max_results"
+        ]
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Default"
+        ],
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "profile",
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "hydradb",
+  "protocol": "db_hydradb://",
+  "title": "HydraDB"
+}

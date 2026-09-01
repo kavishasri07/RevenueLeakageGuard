@@ -1,0 +1,363 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Durable, shared agent memory exposed as tools, backed by LaserData (Apache Iggy) via the Laser SDK.\nExposes four agent tools: 'remember' stores a statement, 'recall' returns the most relevant items, 'improve' reinforces a memory with feedback, and 'forget' deletes one. Pick your deployment (local Apache Iggy or LaserData Cloud), set the connection string and a namespace, and it works; point several agents at the same namespace to share one durable memory.",
+  "documentation": "https://docs.laserdata.com",
+  "icon": "laserdata.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "local": {
+                  "dependencies": {
+                    "show_advanced": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "allow_namespace_override": {
+                              "default": true,
+                              "description": "When on (default), the agent may pass a different namespace per call. Turn off to lock every call to the configured namespace.",
+                              "enum": [
+                                true,
+                                false
+                              ],
+                              "title": "Allow namespace override",
+                              "type": "boolean"
+                            },
+                            "folded": {
+                              "default": true,
+                              "description": "When on (default), 'recall' folds the durable memory topic in-process — works against plain Apache Iggy and LaserData Cloud alike (verified live). Turn off only to read a managed KV view on a deployment that serves one.",
+                              "enum": [
+                                true,
+                                false
+                              ],
+                              "title": "Folded recall",
+                              "type": "boolean"
+                            },
+                            "op_timeout": {
+                              "default": 30,
+                              "description": "Max seconds any single memory operation (including the first connect) may take before it fails.",
+                              "maximum": 600,
+                              "minimum": 5,
+                              "title": "Operation timeout (s)",
+                              "type": "integer"
+                            },
+                            "recall_limit": {
+                              "default": 10,
+                              "description": "Maximum number of memory items to retrieve per recall.",
+                              "maximum": 200,
+                              "minimum": 1,
+                              "title": "Recall limit",
+                              "type": "integer"
+                            },
+                            "show_advanced": {
+                              "enum": [
+                                true
+                              ]
+                            },
+                            "stream": {
+                              "default": "rocketride-memory",
+                              "description": "The Iggy stream the memory topics live in, pinned as the connection's default stream. All nodes sharing one memory must use the same stream.",
+                              "title": "Stream",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "show_advanced": {
+                              "enum": [
+                                false
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "object": "local",
+                  "properties": {
+                    "connection_string": {
+                      "default": "",
+                      "description": "Apache Iggy connection string in the form <code>user:password@host:port</code>, e.g. <code>iggy:iggy@localhost:8090</code>. The server must be a VSR-enabled Iggy build — use <a href='https://github.com/laserdata/laser-stack' target='_blank'>laser-stack</a> (its <code>./scripts/up</code> prints a ready connection string); stock pre-VSR Iggy images cannot talk to this SDK. A containerized engine needs an address reachable from the container, e.g. <code>host.docker.internal</code>. Falls back to the LASER_CONNECTION_STRING environment variable when blank.",
+                      "title": "Connection string",
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "default": "",
+                      "description": "Memory scope every call reads and writes, e.g. <code>customer:42</code>. Can be passed by the agent per call; a namespace is required on the call or here.",
+                      "title": "Namespace",
+                      "type": "string"
+                    },
+                    "show_advanced": {
+                      "default": false,
+                      "description": "Show advanced options. The defaults work for most cases, leave off for a simple setup.",
+                      "enum": [
+                        true,
+                        false
+                      ],
+                      "title": "Advanced settings",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "connection_string"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "local"
+                  ]
+                }
+              }
+            },
+            {
+              "properties": {
+                "cloud": {
+                  "dependencies": {
+                    "show_advanced": {
+                      "oneOf": [
+                        {
+                          "properties": {
+                            "allow_namespace_override": {
+                              "default": true,
+                              "description": "When on (default), the agent may pass a different namespace per call. Turn off to lock every call to the configured namespace.",
+                              "enum": [
+                                true,
+                                false
+                              ],
+                              "title": "Allow namespace override",
+                              "type": "boolean"
+                            },
+                            "folded": {
+                              "default": true,
+                              "description": "When on (default), 'recall' folds the durable memory topic in-process — works against plain Apache Iggy and LaserData Cloud alike (verified live). Turn off only to read a managed KV view on a deployment that serves one.",
+                              "enum": [
+                                true,
+                                false
+                              ],
+                              "title": "Folded recall",
+                              "type": "boolean"
+                            },
+                            "op_timeout": {
+                              "default": 30,
+                              "description": "Max seconds any single memory operation (including the first connect) may take before it fails.",
+                              "maximum": 600,
+                              "minimum": 5,
+                              "title": "Operation timeout (s)",
+                              "type": "integer"
+                            },
+                            "recall_limit": {
+                              "default": 10,
+                              "description": "Maximum number of memory items to retrieve per recall.",
+                              "maximum": 200,
+                              "minimum": 1,
+                              "title": "Recall limit",
+                              "type": "integer"
+                            },
+                            "show_advanced": {
+                              "enum": [
+                                true
+                              ]
+                            },
+                            "stream": {
+                              "default": "rocketride-memory",
+                              "description": "The Iggy stream the memory topics live in, pinned as the connection's default stream. All nodes sharing one memory must use the same stream.",
+                              "title": "Stream",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        {
+                          "properties": {
+                            "show_advanced": {
+                              "enum": [
+                                false
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "object": "cloud",
+                  "properties": {
+                    "connection_string": {
+                      "default": "",
+                      "description": "LaserData Cloud endpoint in the form <code>user:password@host:port</code> — the user and password from your deployment's <b>Credentials</b> tab, the domain and TCP port from its <b>Overview</b> tab. TLS is automatic for <code>*.laserdata.cloud</code> hosts (the SDK ships the LaserData root CA). The deployment must serve VSR — created on/after 2026-07-31; recreate older ones. Falls back to the LASER_CONNECTION_STRING environment variable when blank.",
+                      "title": "Connection string",
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "default": "",
+                      "description": "Memory scope every call reads and writes, e.g. <code>customer:42</code>. Can be passed by the agent per call; a namespace is required on the call or here.",
+                      "title": "Namespace",
+                      "type": "string"
+                    },
+                    "show_advanced": {
+                      "default": false,
+                      "description": "Show advanced options. The defaults work for most cases, leave off for a simple setup.",
+                      "enum": [
+                        true,
+                        false
+                      ],
+                      "title": "Advanced settings",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "connection_string"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "cloud"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "local",
+          "description": "Connect to...",
+          "enum": [
+            "cloud",
+            "local"
+          ],
+          "title": "LaserData deployment",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_laserdata_memory",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "profile"
+      ],
+      "title": "LaserData Memory",
+      "type": "object"
+    },
+    "ui": {
+      "cloud": {
+        "allow_namespace_override": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "connection_string": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "folded": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "namespace": {},
+        "op_timeout": {},
+        "recall_limit": {},
+        "show_advanced": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "stream": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "connection_string",
+          "namespace",
+          "show_advanced",
+          "stream",
+          "allow_namespace_override",
+          "folded",
+          "recall_limit",
+          "op_timeout"
+        ]
+      },
+      "local": {
+        "allow_namespace_override": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "connection_string": {
+          "ui:secure": true,
+          "ui:widget": "ApiKeyWidget"
+        },
+        "folded": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "namespace": {},
+        "op_timeout": {},
+        "recall_limit": {},
+        "show_advanced": {
+          "ui:enumNames": [
+            "Yes",
+            "No"
+          ]
+        },
+        "stream": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "connection_string",
+          "namespace",
+          "show_advanced",
+          "stream",
+          "allow_namespace_override",
+          "folded",
+          "recall_limit",
+          "op_timeout"
+        ]
+      },
+      "profile": {
+        "ui:enumNames": [
+          "LaserData Cloud",
+          "Your own Apache Iggy server"
+        ]
+      },
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "profile",
+        "local",
+        "cloud"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "laserdata",
+  "protocol": "tool_laserdata_memory://",
+  "title": "LaserData Memory"
+}

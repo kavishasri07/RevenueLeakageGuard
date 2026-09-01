@@ -1,0 +1,66 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Exposes Slack workspace operations as agent tools.\nPost messages to channels or threads, list public channels, read channel history,\nand verify the connection. Authenticates with a bot token, or an incoming-webhook\nURL for zero-scope post-only setups.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "slack.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "properties": {
+        "token": {
+          "default": "",
+          "description": "Slack bot token (starts with xoxb-) from your app's OAuth & Permissions page. Needs chat:write to post, channels:read to list channels, and channels:history to read history. Leave empty when using a webhook URL.",
+          "title": "Bot User OAuth Token",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_slack",
+          "type": "string"
+        },
+        "webhookUrl": {
+          "default": "",
+          "description": "Slack incoming-webhook URL for zero-scope setups. Enables ONLY message_post, and messages always go to the channel the webhook was created for. Configure either this or a bot token, not both.",
+          "title": "Incoming Webhook URL",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "Slack",
+      "type": "object"
+    },
+    "ui": {
+      "token": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      },
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "token",
+        "webhookUrl"
+      ],
+      "webhookUrl": {
+        "ui:secure": true,
+        "ui:widget": "ApiKeyWidget"
+      }
+    }
+  },
+  "plans": null,
+  "prefix": "slack",
+  "protocol": "tool_slack://",
+  "tile": [
+    "Slack${parameters.slack.webhookUrl ? ' (webhook)' : ''}"
+  ],
+  "title": "Slack"
+}

@@ -1,0 +1,156 @@
+{
+  "actions": 0,
+  "capabilities": 67584,
+  "classType": [
+    "text"
+  ],
+  "description": "An opt-in currency converter for the audit-grade financial extraction suite. \nConverts fact values from a source currency to a target currency at a stated rate \nand date supplied in the configuration — conversion is never implicit or fetched \nfrom a live rate. Reads and writes the <code>answers</code> lane.</br>\n</br>\nThe conversion is <b>non-destructive</b>: the original amount and currency are kept, \na <code>converted</code> block is added, and a <code>provenance</code> entry records \nthe rate, date and source/target currencies. Records that are not fact objects, or whose \ncurrency does not match the configured source, pass through unchanged.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "util-text.svg",
+  "lanes": {
+    "answers": [
+      "answers"
+    ]
+  },
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "profile": {
+          "oneOf": [
+            {
+              "properties": {
+                "default": {
+                  "object": "default",
+                  "properties": {
+                    "amount_field": {
+                      "default": "amount",
+                      "description": "The fact field holding the numeric amount to convert.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "title": "Amount field",
+                      "type": "string"
+                    },
+                    "currency_field": {
+                      "default": "currency",
+                      "description": "The fact field holding the currency code.",
+                      "maxLength": 128,
+                      "minLength": 1,
+                      "title": "Currency field",
+                      "type": "string"
+                    },
+                    "decimals": {
+                      "default": 2,
+                      "description": "Number of fractional digits for the converted amount (rounded half-up).",
+                      "maximum": 10,
+                      "minimum": 0,
+                      "title": "Rounding decimals",
+                      "type": "integer"
+                    },
+                    "rate": {
+                      "default": 1,
+                      "description": "The stated multiplier applied to the source amount (target = source × rate). Supply the rate deliberately; nothing is fetched.",
+                      "minimum": 0,
+                      "title": "Conversion rate",
+                      "type": "number"
+                    },
+                    "rate_date": {
+                      "default": "",
+                      "description": "The date the rate applies to (ISO 8601, e.g. 2026-06-30). Recorded in the conversion provenance.",
+                      "maxLength": 32,
+                      "title": "Rate date",
+                      "type": "string"
+                    },
+                    "source_currency": {
+                      "default": "EUR",
+                      "description": "Currency code to convert FROM (e.g. EUR). Only facts tagged with this currency are converted; case-insensitive.",
+                      "maxLength": 16,
+                      "minLength": 1,
+                      "title": "Source currency",
+                      "type": "string"
+                    },
+                    "target_currency": {
+                      "default": "USD",
+                      "description": "Currency code to convert TO (e.g. USD).",
+                      "maxLength": 16,
+                      "minLength": 1,
+                      "title": "Target currency",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "source_currency",
+                    "target_currency",
+                    "rate",
+                    "rate_date",
+                    "amount_field",
+                    "currency_field",
+                    "decimals"
+                  ],
+                  "type": "object"
+                },
+                "profile": {
+                  "enum": [
+                    "default"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "profile": {
+          "default": "default",
+          "description": "Explicit currency conversion configuration",
+          "enum": [
+            "default"
+          ],
+          "title": "Conversion",
+          "type": "string"
+        }
+      },
+      "required": [
+        "profile"
+      ],
+      "title": "Currency Convert (Explicit)",
+      "type": "object"
+    },
+    "ui": {
+      "default": {
+        "amount_field": {},
+        "currency_field": {},
+        "decimals": {},
+        "rate": {},
+        "rate_date": {},
+        "source_currency": {},
+        "target_currency": {},
+        "ui:options": {
+          "label": false,
+          "nonNestedDisplay": true
+        },
+        "ui:order": [
+          "source_currency",
+          "target_currency",
+          "rate",
+          "rate_date",
+          "amount_field",
+          "currency_field",
+          "decimals"
+        ]
+      },
+      "profile": {
+        "ui:enumNames": [
+          "Explicit conversion at a stated rate"
+        ]
+      },
+      "ui:order": [
+        "profile",
+        "default"
+      ]
+    }
+  },
+  "plans": null,
+  "prefix": "currency_convert_explicit",
+  "protocol": "currency_convert_explicit://",
+  "title": "Currency Convert (Explicit)"
+}

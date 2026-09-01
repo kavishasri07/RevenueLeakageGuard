@@ -1,0 +1,156 @@
+{
+  "actions": 0,
+  "capabilities": 3072,
+  "classType": [
+    "tool"
+  ],
+  "description": "Exposes Gmail operations as agent tools.\nRead, search, label, draft, send, and organize mail; permanent delete available with full access.\nAuthenticates via a Google service account or user OAuth.",
+  "documentation": "https://docs.rocketride.org",
+  "icon": "gmail.svg",
+  "lanes": {},
+  "Pipe": {
+    "schema": {
+      "dependencies": {
+        "authType": {
+          "oneOf": [
+            {
+              "properties": {
+                "adminEmail": {
+                  "description": "Enter the email address of a Google Workspace administrator.\n\nThis email should belong to a user with administrative privileges in your Google Workspace domain.",
+                  "title": "Administrator E-mail",
+                  "type": "string"
+                },
+                "authType": {
+                  "enum": [
+                    "service"
+                  ]
+                },
+                "customerId": {
+                  "description": "Enter your Google Workspace Customer ID.\n\nThis unique identifier is assigned to your organization by Google. It is used to specify the particular Google Workspace domain you want to manage.",
+                  "title": "Customer ID",
+                  "type": "string"
+                },
+                "serviceKey": {
+                  "description": "Upload the JSON key file for your Google Workspace service account.\n\nThis file contains the credentials necessary to authenticate API requests.",
+                  "format": "data-url",
+                  "title": "Service Account Key File",
+                  "type": "string"
+                }
+              }
+            },
+            {
+              "properties": {
+                "authType": {
+                  "enum": [
+                    "user"
+                  ]
+                },
+                "oAuthButton": {
+                  "title": "Login with Google",
+                  "type": "string"
+                },
+                "userToken": {
+                  "description": "It is a long term token that allows you to get new access tokens to access the Google API.",
+                  "title": "Access Token",
+                  "type": "string"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "properties": {
+        "access": {
+          "default": "modify",
+          "description": "Gmail scopes to request. readonly: read only. modify: read + label/organize. send: modify + send mail. settings: modify + filters/IMAP/POP/vacation/forwarding. settings_sharing: settings + sendAs/delegation/S⁠MIME. full: complete mailbox access, required for permanent delete.",
+          "enum": [
+            "readonly",
+            "modify",
+            "send",
+            "settings",
+            "settings_sharing",
+            "full"
+          ],
+          "title": "Access level",
+          "type": "string"
+        },
+        "authType": {
+          "default": "service",
+          "enum": [
+            "service",
+            "user"
+          ],
+          "title": "Authentication Type",
+          "type": "string"
+        },
+        "type": {
+          "default": "tool_gmail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "authType",
+        "access"
+      ],
+      "title": "Gmail",
+      "type": "object"
+    },
+    "ui": {
+      "access": {
+        "ui:enumNames": [
+          "Read-only",
+          "Modify (read + organize)",
+          "Send (modify + send mail)",
+          "Settings (modify + filters/IMAP/vacation/forwarding)",
+          "Settings sharing (settings + sendAs/delegation/S⁠MIME)",
+          "Full (allows permanent delete)"
+        ]
+      },
+      "adminEmail": {},
+      "authType": {
+        "ui:enumNames": [
+          "Service",
+          "User"
+        ],
+        "ui:readonlyOnEdit": true
+      },
+      "customerId": {},
+      "oAuthButton": {
+        "ui:widget": "GoogleButtonWidget"
+      },
+      "serviceKey": {
+        "ui:options": {
+          "accept": ".json"
+        }
+      },
+      "type": {
+        "ui:options": {
+          "label": false
+        },
+        "ui:widget": "hidden"
+      },
+      "ui:order": [
+        "type",
+        "authType",
+        "customerId",
+        "adminEmail",
+        "serviceKey",
+        "oAuthButton",
+        "userToken",
+        "access"
+      ],
+      "userToken": {
+        "ui:disabled": true,
+        "ui:widget": "password"
+      }
+    }
+  },
+  "plans": null,
+  "prefix": "gmail",
+  "protocol": "tool_gmail://",
+  "tile": [
+    "Gmail (${parameters.gmail.access})"
+  ],
+  "title": "Gmail"
+}
