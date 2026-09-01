@@ -1,4 +1,3 @@
-"""Entitlement: what the billing/provisioning system actually granted."""
 import uuid
 from datetime import datetime
 

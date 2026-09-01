@@ -1,9 +1,3 @@
-"""
-UsageRecord: metered product usage, pre-aggregated to a period.
-Raw event-level telemetry should be rolled up (daily/monthly) before
-it ever reaches this table -- reconciliation runs against aggregates,
-not raw events.
-"""
 import uuid
 from datetime import date
 

@@ -1,9 +1,3 @@
-"""
-ReconciliationEvent: the actual output of the engine. Event-sourced /
-append-only by convention (rows are updated in status, never deleted)
-so there's a full audit trail of what was flagged, reviewed, and
-resolved -- finance and audit both need that history.
-"""
 import enum
 import uuid
 from datetime import date, datetime

@@ -1,4 +1,3 @@
-"""Customer: the anchor entity every other table hangs off of."""
 import uuid
 from datetime import datetime
 

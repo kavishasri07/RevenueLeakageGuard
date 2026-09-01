@@ -1,4 +1,3 @@
-"""BillingRecord: what was actually invoiced, from the billing system."""
 import uuid
 from datetime import date
 

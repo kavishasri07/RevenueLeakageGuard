@@ -1,10 +1,3 @@
-"""
-Contract + ContractLineItem: the source of truth for what a customer
-agreed to. Line items are extracted from the signed document (usually
-via LLM-assisted parsing) and carry a confidence + provenance pointer
-back to the source clause, since finance needs to trust/trace them
-before acting on anything derived from them.
-"""
 import uuid
 from datetime import date, datetime
 
