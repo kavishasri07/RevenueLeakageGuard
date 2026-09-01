@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# Environment / secrets
+.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+revenue_leakage.db
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
