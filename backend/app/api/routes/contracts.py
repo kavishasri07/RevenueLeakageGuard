@@ -41,27 +41,13 @@ def create_contract(payload: ContractCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/extract")
-async def extract_contract(
-    file: UploadFile = File(...),
-    customer_id: str | None = None,
-    db: Session = Depends(get_db),
-):
+async def extract_contract(file: UploadFile = File(...)):
     """
-    Upload a contract PDF and get back proposed structured line items.
-
-    - If `customer_id` is NOT provided: line items are returned for
-      client-side review only. Nothing is saved. The caller must then
-      POST to /contracts with the confirmed line_items to persist them.
-    - If `customer_id` IS provided: a draft Contract + line items are
-      saved immediately in this single request (upload = save).
+    Upload a contract PDF, get back proposed structured line items
+    (NOT yet saved). Review/edit client-side, then POST to /contracts
+    with the confirmed line_items to persist them.
     """
     import tempfile, os
-
-    if file.content_type != "application/pdf":
-        raise HTTPException(400, "Only PDF files are supported")
-
-    if customer_id and not db.get(Customer, customer_id):
-        raise HTTPException(404, "Customer not found")
 
     suffix = os.path.splitext(file.filename or "contract.pdf")[1] or ".pdf"
     with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -71,29 +57,10 @@ async def extract_contract(
     try:
         text = extract_text_from_pdf(tmp_path)
         line_items = extract_contract_terms(text)
-    except Exception as e:
-        raise HTTPException(422, f"Could not extract contract terms: {e}")
     finally:
         os.unlink(tmp_path)
 
-    if not customer_id:
-        return {"line_items": line_items, "saved": False}
-
-    contract = Contract(
-        customer_id=customer_id,
-        source_doc_ref=file.filename,
-        status="draft",
-    )
-    db.add(contract)
-    db.flush()  # get contract.id before adding line items
-
-    for li in line_items:
-        db.add(ContractLineItem(contract_id=contract.id, **li))
-
-    db.commit()
-    db.refresh(contract)
-
-    return {"line_items": line_items, "contract_id": contract.id, "saved": True}
+    return {"line_items": line_items}
 
 
 @router.get("/{contract_id}", response_model=ContractOut)
